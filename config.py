@@ -1,4 +1,5 @@
-import os
+import dotenv, os
+dotenv.load_dotenv()
 
 VA_NAME = 'Jarvis'
 
@@ -12,7 +13,7 @@ MICROPHONE_INDEX = 1  # ID микрофона (можете просто мен�
 
 CHROME_PATH = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
 
-PICOVOICE_TOKEN = os.environ['API-PIC']
+PICOVOICE_TOKEN = os.getenv('API')
 OPENAI_TOKEN = "<ТУТ ТОКЕН CHAT-GPT>"
 
 VA_CMD_LIST = {
