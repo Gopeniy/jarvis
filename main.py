@@ -1,4 +1,4 @@
-# КЕША 3.0 (aka Jarvis)
+# КЕША 3.1 (aka Jarvis)
 """
     Создано Хауди Хо, изменено YarBurArt
     ВНИМАНИЕ!!!
@@ -8,7 +8,7 @@
 
     @TODO:
    -2. Визуализация через gif или Blender
-   -1. Подключить модель animemajg
+   -1. Подключить модель animemajg или апи character.ai
     0. Адекватная архитектура кода, собрать всё и переписать from the ground up.
     1. Задержка воспроизведения звука на основе реальной длительности .wav файла (прогружать при запуске?)
     2. Speech to intent?
@@ -36,6 +36,9 @@ from num2t4ru import num2text
 import subprocess
 import time
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from deep_translator import GoogleTranslator
+
 from ctypes import POINTER, cast
 from comtypes import CLSCTX_ALL, COMObject
 from pycaw.pycaw import (
@@ -54,6 +57,14 @@ t = SyncTranslator()
 # init openai
 # openai.api_key = config.OPENAI_TOKEN
 
+# init anime gpt2 tuned
+tokenizer = AutoTokenizer.from_pretrained('facebook/opt-125m')
+model_gpt = AutoModelForCausalLM.from_pretrained('facebook/opt-125m')
+
+# template's translation
+translator = GoogleTranslator(source='ru', target='en')
+translator1 = GoogleTranslator(source='en', target='ru')
+
 # PORCUPINE
 porcupine = pvporcupine.create(
     access_key=config.PICOVOICE_TOKEN,
@@ -70,22 +81,28 @@ kaldi_rec = vosk.KaldiRecognizer(model, samplerate)
 q = queue.Queue()
 
 
-# def gpt_answer(message):
-#     model_engine = "text-davinci-003"
-#     max_tokens = 128  # default 1024
-#     prompt = t.translate(message, targetlang="en")
-#     completion = openai.Completion.create(
-#         engine=model_engine,
-#         prompt=prompt.text,
-#         max_tokens=max_tokens,
-#         temperature=0.5,
-#         top_p=1,
-#         frequency_penalty=0,
-#         presence_penalty=0
-#     )
-#
-#     translated_result = t.translate(completion.choices[0].text, targetlang="ru")
-#     return translated_result.text
+# debug warn
+class StdoutInterceptor:
+    def __init__(self):
+        self.stdout = sys.stdout
+
+    def flush(self):
+        pass
+
+    def write(self, s):
+        if not s == "[WARN] Overflow - reader is not reading fast enough.":
+            self.stdout.write(s)
+
+
+sys.stdout = StdoutInterceptor()
+
+
+def gpt_answer(message: str) -> str:
+    message = translator.translate(message)
+    inputs = tokenizer.encode(message, return_tensors='pt')
+    outputs = model_gpt.generate(inputs, max_length=100, do_sample=True)
+    message = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return translator1.translate(message)
 
 
 # play(f'{CDIR}\\sound\\ok{random.choice([1, 2, 3, 4])}.wav')
@@ -144,8 +161,8 @@ def va_respond(voice: str):
         # play("not_found")
         # tts.va_speak("Что?")
         if fuzz.ratio(voice.join(voice.split()[:1]).strip(), "скажи") > 75:
-            # gpt_result = gpt_answer(voice)
-            gpt_result = "нет"
+            gpt_result = gpt_answer(voice)
+            # gpt_result = "нет"
             recorder.stop()
             tts.va_speak(gpt_result)
             time.sleep(1)
