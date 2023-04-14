@@ -1,5 +1,6 @@
 # КЕША 3.0 (aka Jarvis)
 """
+    Создано Хауди Хо, изменено YarBurArt
     ВНИМАНИЕ!!!
     Пока что это максимально сырой прототип.
     Позже будет опубликована нормальная версия с удобной установкой и поддержкой всего чего только можно.
@@ -40,7 +41,7 @@ from pycaw.pycaw import (
     IAudioEndpointVolume
 )
 
-import openai
+# import openai
 from gpytranslate import SyncTranslator
 
 CDIR = os.getcwd()
@@ -49,7 +50,7 @@ CDIR = os.getcwd()
 t = SyncTranslator()
 
 # init openai
-openai.api_key = config.OPENAI_TOKEN
+# openai.api_key = config.OPENAI_TOKEN
 
 # PORCUPINE
 porcupine = pvporcupine.create(
@@ -60,29 +61,29 @@ porcupine = pvporcupine.create(
 # print(pvporcupine.KEYWORDS)
 
 # VOSK
-model = vosk.Model("model_small")
+model = vosk.Model(r"models/vosk-model-small-ru-0.22")
 samplerate = 16000
 device = config.MICROPHONE_INDEX
 kaldi_rec = vosk.KaldiRecognizer(model, samplerate)
 q = queue.Queue()
 
 
-def gpt_answer(message):
-    model_engine = "text-davinci-003"
-    max_tokens = 128  # default 1024
-    prompt = t.translate(message, targetlang="en")
-    completion = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt.text,
-        max_tokens=max_tokens,
-        temperature=0.5,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-
-    translated_result = t.translate(completion.choices[0].text, targetlang="ru")
-    return translated_result.text
+# def gpt_answer(message):
+#     model_engine = "text-davinci-003"
+#     max_tokens = 128  # default 1024
+#     prompt = t.translate(message, targetlang="en")
+#     completion = openai.Completion.create(
+#         engine=model_engine,
+#         prompt=prompt.text,
+#         max_tokens=max_tokens,
+#         temperature=0.5,
+#         top_p=1,
+#         frequency_penalty=0,
+#         presence_penalty=0
+#     )
+#
+#     translated_result = t.translate(completion.choices[0].text, targetlang="ru")
+#     return translated_result.text
 
 
 # play(f'{CDIR}\\sound\\ok{random.choice([1, 2, 3, 4])}.wav')
@@ -141,7 +142,8 @@ def va_respond(voice: str):
         # play("not_found")
         # tts.va_speak("Что?")
         if fuzz.ratio(voice.join(voice.split()[:1]).strip(), "скажи") > 75:
-            gpt_result = gpt_answer(voice)
+            # gpt_result = gpt_answer(voice)
+            gpt_result = "нет"
             recorder.stop()
             tts.va_speak(gpt_result)
             time.sleep(1)

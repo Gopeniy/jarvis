@@ -18,7 +18,7 @@ def va_respond(voice: str):
     print(f"[light_sea_green]Vosk thinks you said[/]: [dodger_blue1]{voice}[/]")
 
 
-model = vosk.Model("model_small")
+model = vosk.Model(r"model/vosk-model-ru-0.22")
 samplerate = 16000
 device = 2
 
@@ -43,7 +43,7 @@ def va_listen(callback):
                 callback(json.loads(rec.Result())["text"])
                 end_time = bench.end()
                 print(f"[grey37]This took[/] [red]{end_time[1]}[/]")
-            #else:
+            # else:
             #    print(rec.PartialResult())
 
 # начать прослушивание команд
