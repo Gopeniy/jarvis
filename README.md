@@ -2,7 +2,7 @@
 Simple Voice Assistant made as an experiment using [Silero](https://github.com/snakers4/silero-models) & [Vosk](https://pypi.org/project/vosk/).
 <br>Later on [Picovoice Porcupine Wake Word Detection](https://picovoice.ai/platform/porcupine/)
 
-![image](https://unsplash.com/photos/hhBvtVxDV_I)
+![image](https://images.unsplash.com/photo-1578632749014-ca77efd052eb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)
 
 `The code has NOT been polished and is provided "as is". There are a lot of code that are redundant and there are tons of improvements that can be made.`
 
