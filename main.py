@@ -36,6 +36,8 @@ from num2t4ru import num2text
 import subprocess
 import time
 
+import autopc
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from deep_translator import GoogleTranslator
 
@@ -110,7 +112,7 @@ def play(phrase, wait_done=True):
     global recorder
     filename = f"{CDIR}\\sound\\"
 
-    if phrase == "greet": # for py 3.8
+    if phrase == "greet":  # for py 3.8
         filename += f"greet{random.choice([1, 2, 3])}.wav"
     elif phrase == "ok":
         filename += f"ok{random.choice([1, 2, 3])}.wav"
@@ -228,19 +230,19 @@ def execute_cmd(cmd: str, voice: str):
         tts.va_speak(random.choice(jokes))
 
     elif cmd == 'open_browser':
-        subprocess.Popen([f'{CDIR}\\custom-commands\\Run browser.exe'])
+        autopc.run_app("yan")
         play("ok")
 
     elif cmd == 'open_youtube':
-        subprocess.Popen([f'{CDIR}\\custom-commands\\Run youtube.exe'])
+        autopc.run_browser("https://www.youtube.com")
         play("ok")
 
     elif cmd == 'open_google':
-        subprocess.Popen([f'{CDIR}\\custom-commands\\Run google.exe'])
+        autopc.run_browser()
         play("ok")
 
     elif cmd == 'music':
-        subprocess.Popen([f'{CDIR}\\custom-commands\\Run music.exe'])
+        autopc.run_browser("https://music.yandex.ru/radio")
         play("ok")
 
     elif cmd == 'music_off':
@@ -287,7 +289,7 @@ def execute_cmd(cmd: str, voice: str):
 
     elif cmd == 'gaming_mode_on':
         play("ok")
-        subprocess.check_call([f'{CDIR}\\custom-commands\\Switch to gaming mode.exe'])
+        autopc.run_game("fortnite")
         play("ready")
 
     elif cmd == 'gaming_mode_off':
@@ -319,7 +321,7 @@ recorder = PvRecorder(device_index=config.MICROPHONE_INDEX, frame_length=porcupi
 recorder.start()
 print('Using device: %s' % recorder.selected_device)
 
-print(f"Jarvis (v3.0) начал свою работу ...")
+print(f"Jarvis (v3.1) начал свою работу ...")
 play("run")
 time.sleep(0.5)
 
