@@ -1,4 +1,4 @@
-# Kesha v3.1 very early (aka Jarvis update)
+# Asuka (kesha) v3.1 very early (aka Jarvis update)
 Simple Voice Assistant made as an experiment using [Silero](https://github.com/snakers4/silero-models) & [Vosk](https://pypi.org/project/vosk/).
 <br>Later on [Picovoice Porcupine Wake Word Detection](https://picovoice.ai/platform/porcupine/)
 
